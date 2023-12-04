@@ -1779,6 +1779,7 @@ async function checkWorldInfo(chat, maxContext) {
                                 const secondarySubstituted = substituteParams(keysecondary);
                                 console.debug(`WI UID:${entry.uid}: Filtering for secondary keyword - "${secondarySubstituted}".`);
                                 
+                                // Simplified AND/NOT if statement. (Proper fix for PR#1356 by Bronya)
                                 if (selectiveLogic === 0 && secondarySubstituted && matchKeys(textToScan, secondarySubstituted.trim()) ||
                                 selectiveLogic === 1 && !(secondarySubstituted && matchKeys(textToScan, secondarySubstituted.trim()))) {
                                     if (selectiveLogic === 0) {
