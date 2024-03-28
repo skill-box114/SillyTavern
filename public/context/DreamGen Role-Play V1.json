@@ -3,6 +3,7 @@
     "example_separator": "",
     "chat_start": "",
     "use_stop_strings": false,
+    "allow_jailbreak": false,
     "always_force_name2": false,
     "trim_sentences": true,
     "include_newline": false,
