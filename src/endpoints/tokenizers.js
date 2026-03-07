@@ -1088,7 +1088,7 @@ router.post('/remote/textgenerationwebui/encode', async function (request, respo
                 break;
             case TEXTGEN_TYPES.KOBOLDCPP:
                 url += '/api/extra/tokencount';
-                args.body = JSON.stringify({ 'prompt': text });
+                args.body = JSON.stringify({ 'prompt': text, 'special': false });
                 break;
             case TEXTGEN_TYPES.LLAMACPP:
                 url += '/tokenize';
