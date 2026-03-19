@@ -3645,6 +3645,15 @@ export function initDefaultSlashCommands() {
         aliases: ['list-wrap'],
         returns: t`unnamed argument value wrapped into an array`,
         helpString: t`Wraps a single unnamed argument into an array if it's not already an array. If the value is an empty string, returns an empty array.`,
+        namedArgumentList: [
+            SlashCommandNamedArgument.fromProps({
+                name: 'stringify',
+                description: t`Whether JSON primitives (numbers, booleans, nulls) should be treated as strings, i.e. ["null"] when stringify=true vs. [null] when stringify=false.`,
+                typeList: [ARGUMENT_TYPE.BOOLEAN],
+                defaultValue: 'true',
+                enumList: commonEnumProviders.boolean('trueFalse')(),
+            }),
+        ],
         unnamedArgumentList: [
             SlashCommandArgument.fromProps({
                 description: t`value`,
@@ -3653,7 +3662,7 @@ export function initDefaultSlashCommands() {
                 typeList: [ARGUMENT_TYPE.STRING, ARGUMENT_TYPE.DICTIONARY, ARGUMENT_TYPE.BOOLEAN, ARGUMENT_TYPE.NUMBER, ARGUMENT_TYPE.LIST],
             }),
         ],
-        callback: (_args, value) => {
+        callback: (args, value) => {
             // Closures are not supported
             if (value instanceof SlashCommandClosure) {
                 throw new SlashCommandExecutionError(t`Closures are not supported as unnamed arguments for /array-wrap. Did you forget to call the closure with parentheses?`);
@@ -3680,6 +3689,12 @@ export function initDefaultSlashCommands() {
 
                 // If it's an object, wrap it into an array and stringify
                 if (typeof parsedValue === 'object' && parsedValue !== null) {
+                    return JSON.stringify([parsedValue]);
+                }
+
+                // For primitive values, check if we should take the parsed or original value based on the stringify argument
+                const isJsonPrimitive = parsedValue === null || ['string', 'number', 'boolean'].includes(typeof parsedValue);
+                if (isJsonPrimitive && isFalseBoolean(String(args?.stringify?.toString()))) {
                     return JSON.stringify([parsedValue]);
                 }
 
